@@ -62,6 +62,49 @@ function splitHexString() {
             
             blockDiv.appendChild(blockHeader);
             blockDiv.appendChild(blockContent);
+            
+            // Add decode options only for complete blocks (64 chars)
+            if (block.length === blockSize) {
+                const decodeSection = document.createElement('div');
+                decodeSection.className = 'decode-section';
+                
+                const decodeLabel = document.createElement('label');
+                decodeLabel.textContent = 'Decode as: ';
+                decodeLabel.className = 'decode-label';
+                
+                const decodeSelect = document.createElement('select');
+                decodeSelect.className = 'decode-select';
+                decodeSelect.innerHTML = `
+                    <option value="">Select type...</option>
+                    <option value="bytes32">bytes32</option>
+                    <option value="address">address</option>
+                    <option value="uint256">uint256</option>
+                    <option value="uint128">uint128</option>
+                    <option value="int128">int128</option>
+                    <option value="uint64">uint64</option>
+                `;
+                
+                const decodeResult = document.createElement('div');
+                decodeResult.className = 'decode-result';
+                decodeResult.style.display = 'none';
+                
+                decodeSelect.addEventListener('change', function() {
+                    const selectedType = this.value;
+                    if (selectedType) {
+                        const decoded = decodeBlock(block, selectedType);
+                        decodeResult.textContent = decoded;
+                        decodeResult.style.display = 'block';
+                    } else {
+                        decodeResult.style.display = 'none';
+                    }
+                });
+                
+                decodeSection.appendChild(decodeLabel);
+                decodeSection.appendChild(decodeSelect);
+                decodeSection.appendChild(decodeResult);
+                blockDiv.appendChild(decodeSection);
+            }
+            
             outputContainer.appendChild(blockDiv);
         });
     }
@@ -75,6 +118,83 @@ function showError(message) {
     errorSection.style.display = 'block';
 }
 
+function decodeBlock(hexBlock, type) {
+    // Ensure we have a 64-character hex string (32 bytes)
+    const paddedBlock = hexBlock.padEnd(64, '0');
+    
+    try {
+        switch(type) {
+            case 'bytes32':
+                // Return as is, already bytes32
+                return '0x' + paddedBlock;
+            
+            case 'address':
+                // Address is the last 20 bytes (40 hex chars)
+                const address = paddedBlock.slice(-40);
+                return '0x' + address;
+            
+            case 'uint256':
+                // Convert hex to decimal for uint256
+                return hexToUint256(paddedBlock);
+            
+            case 'uint128':
+                // Take the last 16 bytes (32 hex chars) for uint128
+                const uint128Hex = paddedBlock.slice(-32);
+                return hexToUint(uint128Hex);
+            
+            case 'int128':
+                // Take the last 16 bytes (32 hex chars) for int128
+                const int128Hex = paddedBlock.slice(-32);
+                return hexToInt128(int128Hex);
+            
+            case 'uint64':
+                // Take the last 8 bytes (16 hex chars) for uint64
+                const uint64Hex = paddedBlock.slice(-16);
+                return hexToUint(uint64Hex);
+            
+            default:
+                return 'Unknown type';
+        }
+    } catch (error) {
+        return 'Error decoding: ' + error.message;
+    }
+}
+
+function hexToUint256(hex) {
+    // Handle large numbers using BigInt
+    try {
+        const bigIntValue = BigInt('0x' + hex);
+        return bigIntValue.toString();
+    } catch (e) {
+        return 'Error: Invalid hex for uint256';
+    }
+}
+
+function hexToUint(hex) {
+    try {
+        const bigIntValue = BigInt('0x' + hex);
+        return bigIntValue.toString();
+    } catch (e) {
+        return 'Error: Invalid hex';
+    }
+}
+
+function hexToInt128(hex) {
+    try {
+        const bigIntValue = BigInt('0x' + hex);
+        // Check if the sign bit is set (for 128-bit signed integer)
+        const maxInt128 = BigInt('0x7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF');
+        if (bigIntValue > maxInt128) {
+            // Negative number in two's complement
+            const negativeValue = bigIntValue - (BigInt(1) << BigInt(128));
+            return negativeValue.toString();
+        }
+        return bigIntValue.toString();
+    } catch (e) {
+        return 'Error: Invalid hex for int128';
+    }
+}
+
 function clearAll() {
     document.getElementById('hexInput').value = '';
     document.getElementById('output').innerHTML = '';
@@ -83,9 +203,11 @@ function clearAll() {
 }
 
 // Allow Enter key to trigger split (with Ctrl/Cmd modifier to avoid interfering with line breaks)
-document.getElementById('hexInput').addEventListener('keydown', function(event) {
-    if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
-        event.preventDefault();
-        splitHexString();
-    }
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('hexInput').addEventListener('keydown', function(event) {
+        if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
+            event.preventDefault();
+            splitHexString();
+        }
+    });
 });
