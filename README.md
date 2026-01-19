@@ -55,6 +55,34 @@ npx serve
 
 Then visit `http://localhost:8080` in your browser.
 
+## Deploy to Vercel
+
+This project is ready to deploy to Vercel with zero configuration:
+
+### Option 1: Deploy via Vercel CLI
+
+```bash
+# Install Vercel CLI (if not already installed)
+npm i -g vercel
+
+# Deploy
+vercel
+```
+
+### Option 2: Deploy via Git Integration
+
+1. Push your code to a Git repository (GitHub, GitLab, or Bitbucket)
+2. Go to [vercel.com](https://vercel.com) and sign in
+3. Click "Add New Project"
+4. Import your repository
+5. Click "Deploy" (no configuration needed)
+
+Your site will be live at `https://your-project-name.vercel.app`
+
+### Option 3: Deploy Button
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/zlog-in/abi-splitter)
+
 ## Files
 
 - `index.html` - Main HTML structure

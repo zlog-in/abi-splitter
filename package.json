@@ -1,0 +1,20 @@
+{
+  "name": "abi-splitter",
+  "version": "1.0.0",
+  "description": "A web tool to split hex strings encoded from abi.encode into bytes32 blocks with decode functionality",
+  "main": "index.html",
+  "scripts": {
+    "dev": "python3 -m http.server 8080",
+    "start": "python3 -m http.server 8080"
+  },
+  "keywords": [
+    "abi",
+    "ethereum",
+    "hex",
+    "bytes32",
+    "decoder",
+    "blockchain"
+  ],
+  "author": "",
+  "license": "MIT"
+}
