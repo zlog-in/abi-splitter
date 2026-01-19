@@ -1,3 +1,7 @@
+// Constants for integer bounds
+const MAX_INT128 = BigInt('0x7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF');
+const INT128_MODULO = BigInt(1) << BigInt(128);
+
 function splitHexString() {
     const input = document.getElementById('hexInput').value.trim();
     const outputSection = document.getElementById('outputSection');
@@ -129,7 +133,8 @@ function decodeBlock(hexBlock, type) {
                 return '0x' + paddedBlock;
             
             case 'address':
-                // Address is the last 20 bytes (40 hex chars)
+                // Address is the last 20 bytes (40 hex chars) of the 32-byte block
+                // In ABI encoding, addresses are padded with zeros on the left
                 const address = paddedBlock.slice(-40);
                 return '0x' + address;
             
@@ -183,10 +188,9 @@ function hexToInt128(hex) {
     try {
         const bigIntValue = BigInt('0x' + hex);
         // Check if the sign bit is set (for 128-bit signed integer)
-        const maxInt128 = BigInt('0x7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF');
-        if (bigIntValue > maxInt128) {
+        if (bigIntValue > MAX_INT128) {
             // Negative number in two's complement
-            const negativeValue = bigIntValue - (BigInt(1) << BigInt(128));
+            const negativeValue = bigIntValue - INT128_MODULO;
             return negativeValue.toString();
         }
         return bigIntValue.toString();
