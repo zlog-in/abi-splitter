@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ABI Splitter - Bytes32 Block Viewer</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>ABI Splitter</h1>
+            <p class="subtitle">Paste your hex string encoded from abi.encode to view as bytes32 blocks</p>
+        </header>
+
+        <main>
+            <section class="input-section">
+                <label for="hexInput">Hex String Input:</label>
+                <textarea 
+                    id="hexInput" 
+                    placeholder="Paste your hex string here (e.g., 0x000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000036162630000000000000000000000000000000000000000000000000000000000)"
+                    rows="6"
+                ></textarea>
+                <button id="splitButton" onclick="splitHexString()">Split into Bytes32 Blocks</button>
+                <button id="clearButton" onclick="clearAll()">Clear</button>
+            </section>
+
+            <section class="output-section" id="outputSection" style="display: none;">
+                <h2>Bytes32 Blocks:</h2>
+                <div id="output" class="output-container"></div>
+            </section>
+
+            <section class="error-section" id="errorSection" style="display: none;">
+                <div class="error-message" id="errorMessage"></div>
+            </section>
+        </main>
+
+        <footer>
+            <p>Each bytes32 block is 64 hexadecimal characters (32 bytes)</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
