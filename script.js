@@ -124,7 +124,8 @@ function showError(message) {
 
 function decodeBlock(hexBlock, type) {
     // Ensure we have a 64-character hex string (32 bytes)
-    const paddedBlock = hexBlock.padEnd(64, '0');
+    // Left-pad with zeros if needed (though this should always be 64 chars when called)
+    const paddedBlock = hexBlock.padStart(64, '0');
     
     try {
         switch(type) {
@@ -206,7 +207,7 @@ function clearAll() {
     document.getElementById('errorSection').style.display = 'none';
 }
 
-// Allow Enter key to trigger split (with Ctrl/Cmd modifier to avoid interfering with line breaks)
+// Allow Ctrl/Cmd+Enter to trigger split while preserving normal Enter for line breaks in textarea
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('hexInput').addEventListener('keydown', function(event) {
         if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
