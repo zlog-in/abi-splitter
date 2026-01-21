@@ -24,9 +24,32 @@
                 ></textarea>
                 <button id="splitButton" onclick="splitHexString()">Split into Bytes32 Blocks</button>
                 <button id="clearButton" onclick="clearAll()">Clear</button>
+                <div class="mode-toggle">
+                    <label class="toggle-label">
+                        <input type="checkbox" id="calldataMode">
+                        <span class="toggle-text">Calldata Mode</span>
+                        <span class="toggle-hint">(Extract function selector from first 4 bytes)</span>
+                    </label>
+                </div>
             </section>
 
             <section class="output-section" id="outputSection" style="display: none;">
+                <div id="selectorSection" class="selector-section" style="display: none;">
+                    <div class="selector-header">Function Selector (4 bytes)</div>
+                    <div class="selector-content">
+                        <span id="selectorValue" class="selector-value"></span>
+                        <a id="selectorLookup" class="selector-lookup" href="#" target="_blank" rel="noopener">
+                            Lookup on 4byte.directory
+                        </a>
+                    </div>
+                    <div id="signatureSection" class="signature-section" style="display: none;">
+                        <div class="signature-header">
+                            <span class="signature-label">Decoded Function:</span>
+                            <span id="signatureLoading" class="signature-loading">Loading...</span>
+                        </div>
+                        <div id="signatureResult" class="signature-result" style="display: none;"></div>
+                    </div>
+                </div>
                 <h2>Bytes32 Blocks:</h2>
                 <div id="output" class="output-container"></div>
             </section>
